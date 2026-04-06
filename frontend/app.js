@@ -1,11 +1,6 @@
-/* ─────────────────────────────────────────
-   Kindness Wall — Frontend Logic
-   ───────────────────────────────────────── */
-
 const API_BASE   = "";
 const API_URL    = `${API_BASE}/api/kindness`;
 
-// ── DOM refs ────────────────────────────────
 const form       = document.getElementById("kindness-form");
 const nameInput  = document.getElementById("name-input");
 const storyInput = document.getElementById("story-input");
@@ -18,12 +13,10 @@ const badge      = document.getElementById("entry-count-badge");
 const refreshBtn = document.getElementById("refresh-btn");
 const charCount  = document.getElementById("char-count");
 
-// ── Character counter ────────────────────────
 storyInput.addEventListener("input", () => {
   charCount.textContent = storyInput.value.length;
 });
 
-// ── Fetch & render all entries ───────────────
 async function loadEntries() {
   try {
     const res = await fetch(API_URL);
@@ -88,7 +81,6 @@ function attachListeners() {
   });
 }
 
-// ── Submit form ──────────────────────────────
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name  = nameInput.value.trim();
@@ -142,7 +134,6 @@ function prependCard(entry) {
   });
 }
 
-// ── Give a ❤️ ────────────────────────────────
 async function giveHeart(id, btn) {
   btn.disabled = true;
 
@@ -164,7 +155,6 @@ async function giveHeart(id, btn) {
   }
 }
 
-// ── Delete an entry ──────────────────────────
 async function deleteEntry(id) {
   if (!confirm("Remove this kind act?")) return;
   try {
@@ -192,7 +182,6 @@ async function deleteEntry(id) {
   }
 }
 
-// ── Refresh ──────────────────────────────────
 refreshBtn.addEventListener("click", () => {
   container.innerHTML = `
     <div class="skeleton-card"></div>
@@ -201,7 +190,6 @@ refreshBtn.addEventListener("click", () => {
   loadEntries();
 });
 
-// ── Helpers ──────────────────────────────────
 function setLoading(on) {
   submitBtn.disabled = on;
   btnText.classList.toggle("hidden", on);
