@@ -1,4 +1,4 @@
-# 🌸 Random Acts of Kindness Wall
+# Random Acts of Kindness Wall
 
 A full-stack web app where users share kind acts they did or witnessed. Others can react with ❤️. A live, uplifting feed of good deeds.
 
