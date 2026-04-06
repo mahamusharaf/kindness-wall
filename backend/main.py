@@ -32,7 +32,6 @@ class KindnessIn(BaseModel):
     name: str
     story: str
 
-# ── Helpers ─────────────────────────────────────
 def serialize(doc) -> dict:
     return {
         "id": str(doc["_id"]),
@@ -111,7 +110,6 @@ def health():
     return {"status": "ok"}
 
 
-# ── Serve Frontend (must be LAST) ────────────────
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get("/{full_path:path}")
