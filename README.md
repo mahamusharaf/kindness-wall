@@ -11,16 +11,16 @@ A full-stack web app where users share kind acts they did or witnessed. Others c
 ```
 kindness-wall/
 ├── backend/
-│   ├── main.py               # FastAPI app + all API routes
+│   ├── main.py              
 │   ├── requirements.txt
-│   └── .env                  # MONGODB_URI (not committed to git)
+│   └── .env                 
 ├── frontend/
-│   ├── index.html            # Warm pastel UI
-│   ├── style.css             # Light mode design
-│   └── app.js                # Vanilla JS (fetch + heart animation)
+│   ├── index.html            
+│   ├── style.css        
+│   └── app.js              
 ├── k8s/
-│   ├── deployment.yaml       # AKS Deployment (2 replicas)
-│   └── service.yaml          # LoadBalancer (public IP on port 80)
+│   ├── deployment.yaml      
+│   └── service.yaml        
 ├── Dockerfile
 ├── .dockerignore
 ├── .gitignore
@@ -41,15 +41,5 @@ kindness-wall/
 }
 
 
-## 📡 API Routes
-
-| Method | Route | Purpose |
-|--------|-------|---------|
-| GET | `/` | Serve frontend |
-| GET | `/api/kindness` | Fetch all entries (newest first) |
-| POST | `/api/kindness` | Submit new entry `{ name, story }` |
-| POST | `/api/kindness/{id}/heart` | Add a ❤️ reaction |
-| DELETE | `/api/kindness/{id}` | Remove an entry |
-| GET | `/api/health` | Health check |
 
 
