@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kindness-wall-service
+  labels:
+    app: kindness-wall
+spec:
+  type: LoadBalancer
+  selector:
+    app: kindness-wall
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

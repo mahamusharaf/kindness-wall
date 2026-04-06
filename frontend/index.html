@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Acts of Kindness Wall 🌸</title>
+  <meta name="description"
+    content="A live, uplifting feed of good deeds — share a kind act you did or witnessed and spread the love." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+
+  <!-- ── Decorative petals ── -->
+  <div class="petal petal-1">🌿</div>
+  <div class="petal petal-2">💜</div>
+  <div class="petal petal-3">☁️</div>
+  <div class="petal petal-4">☀️</div>
+  <div class="petal petal-5">🌸</div>
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">💜</span>
+        <div>
+          <h1>Kindness Wall</h1>
+          <p class="tagline">Random Acts of Kindness — share yours, inspire others</p>
+        </div>
+      </div>
+      <div id="entry-count-badge" class="badge">Loading…</div>
+    </div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main>
+
+    <!-- Submit Form -->
+    <section class="card form-card" aria-label="Share a kind act">
+      <h2 class="card-title">🌟 Share a Kind Act</h2>
+
+      <form id="kindness-form" novalidate>
+        <div class="field">
+          <label for="name-input">Your Name</label>
+          <input id="name-input" type="text" placeholder="e.g. Sarah" maxlength="60" autocomplete="name" required />
+        </div>
+
+        <div class="field">
+          <label for="story-input">What happened?</label>
+          <textarea id="story-input" placeholder="I helped an elderly man carry his groceries to his car today…"
+            rows="4" maxlength="600" required></textarea>
+          <span class="char-counter"><span id="char-count">0</span> / 600</span>
+        </div>
+
+        <button id="submit-btn" type="submit">
+          <span id="btn-text">Share Your Story ✨</span>
+          <span id="btn-spinner" class="spinner hidden"></span>
+        </button>
+
+        <div id="form-feedback" class="feedback hidden"></div>
+      </form>
+    </section>
+
+    <!-- Live Feed -->
+    <section aria-label="Kindness feed">
+      <div class="feed-header">
+        <h2>💛 Kind Acts Feed</h2>
+        <button id="refresh-btn" class="icon-btn" title="Refresh feed" aria-label="Refresh feed">↻</button>
+      </div>
+
+      <div id="entries-container">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+
+</html>
