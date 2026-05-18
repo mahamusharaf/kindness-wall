@@ -92,14 +92,18 @@ def add_heart(entry_id: str):
     return {"id": entry_id, "hearts": result["hearts"]}
 
 
+class DeleteRequest(BaseModel):
+    password: str
+
 @app.delete("/api/kindness/{entry_id}", status_code=200)
-def delete_entry(entry_id: str):
-    """Remove a kindness entry."""
+def delete_entry(entry_id: str, req: DeleteRequest):
+    admin_password = os.getenv("ADMIN_PASSWORD", "")
+    if not admin_password or req.password != admin_password:
+        raise HTTPException(status_code=403, detail="Invalid password.")
     try:
         oid = ObjectId(entry_id)
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid entry ID.")
-
     result = collection.delete_one({"_id": oid})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Entry not found.")

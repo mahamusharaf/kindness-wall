@@ -74,6 +74,10 @@ function buildCard(e) {
 
 function attachListeners() {
   document.querySelectorAll(".heart-btn").forEach(btn => {
+    if (localStorage.getItem(`heart-${btn.dataset.id}`)) {
+      btn.disabled = true;
+      btn.title = "Already liked";
+    }
     btn.addEventListener("click", () => giveHeart(btn.dataset.id, btn));
   });
   document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -135,12 +139,18 @@ function prependCard(entry) {
 }
 
 async function giveHeart(id, btn) {
-  btn.disabled = true;
+  const storageKey = `heart-${id}`;
+  if (localStorage.getItem(storageKey)) {
+    const icon = btn.querySelector(".heart-icon");
+    icon.style.filter = "grayscale(1)";
+    setTimeout(() => icon.style.filter = "", 600);
+    return;
+  }
 
-  // Trigger pop animation
+  btn.disabled = true;
   const icon = btn.querySelector(".heart-icon");
   icon.classList.remove("beating");
-  void icon.offsetWidth; // reflow to restart animation
+  void icon.offsetWidth;
   icon.classList.add("beating");
 
   try {
@@ -148,23 +158,33 @@ async function giveHeart(id, btn) {
     if (!res.ok) throw new Error();
     const data = await res.json();
     btn.querySelector(".heart-count").textContent = data.hearts;
+    localStorage.setItem(storageKey, "1");
+    btn.disabled = true; // keep disabled after successful like
+    btn.title = "Already liked";
   } catch {
-    // silently fail — re-enable
-  } finally {
     btn.disabled = false;
   }
 }
 
 async function deleteEntry(id) {
-  if (!confirm("Remove this kind act?")) return;
+  const password = prompt("Enter admin password to delete this entry:");
+  if (!password) return;
   try {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    if (res.status === 403) {
+      alert("Incorrect password.");
+      return;
+    }
     if (!res.ok) throw new Error();
     const card = document.getElementById(`card-${id}`);
     if (card) {
       card.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-      card.style.opacity    = "0";
-      card.style.transform  = "scale(0.95)";
+      card.style.opacity = "0";
+      card.style.transform = "scale(0.95)";
       setTimeout(() => {
         card.remove();
         decrementBadge();
