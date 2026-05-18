@@ -33,7 +33,6 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     needs: test
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -44,7 +43,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: mahrukh26
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Backend Image
@@ -70,33 +69,3 @@ jobs:
           file: ./database/Dockerfile
           push: true
           tags: mahrukh26/kindness-database:latest
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Set AKS context
-        uses: azure/aks-set-context@v3
-        with:
-          resource-group: cui
-          cluster-name: mahak123
-
-      - name: Deploy to AKS
-        run: |
-          kubectl apply -f k8s/
-          kubectl set image deployment/backend backend=mahrukh26/kindness-wall:latest
-          kubectl set image deployment/frontend frontend=mahrukh26/kindness-frontend:latest
-          kubectl set image deployment/database database=mahrukh26/kindness-database:latest
-          kubectl rollout status deployment/backend
-          kubectl rollout status deployment/frontend
-          kubectl rollout status deployment/database
