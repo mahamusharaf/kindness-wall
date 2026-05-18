@@ -21,6 +21,8 @@ spec:
           env:
             - name: MONGO_URL
               value: "mongodb://database:27017"
+            - name: MONGODB_URI
+              value: "mongodb://database:27017/kindness_wall"
             - name: DB_NAME
               value: "kindness_wall"
           resources:
