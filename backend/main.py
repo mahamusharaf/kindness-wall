@@ -22,9 +22,10 @@ app.add_middleware(
 )
 
 # ── MongoDB Connection ──────────────────────────
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-client = MongoClient(MONGODB_URI)
-db = client["kindness_db"]
+MONGO_URL = os.getenv("MONGO_URL", os.getenv("MONGODB_URI", "mongodb://localhost:27017"))
+client = MongoClient(MONGO_URL)
+DB_NAME = os.getenv("DB_NAME", "kindness_db")
+db = client[DB_NAME]
 collection = db["kindness_entries"]
 
 # ── Pydantic Models ─────────────────────────────
@@ -35,10 +36,10 @@ class KindnessIn(BaseModel):
 def serialize(doc) -> dict:
     return {
         "id": str(doc["_id"]),
-        "name": doc["name"],
-        "story": doc["story"],
+        "name": doc.get("name", doc.get("author", "Admin")),
+        "story": doc.get("story", doc.get("message", "")),
         "hearts": doc.get("hearts", 0),
-        "created_at": doc.get("created_at", ""),
+        "created_at": doc.get("created_at", doc.get("createdAt", "")),
     }
 
 # ── API Routes ───────────────────────────────────

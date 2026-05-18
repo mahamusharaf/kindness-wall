@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+
+  # ─── MongoDB Database ───────────────────────────────────────────
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: kindness-db
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: kindness_wall
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db          # Persist DB data across restarts
+    networks:
+      - kindness-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  # ─── FastAPI Backend ─────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kindness-backend
+    restart: unless-stopped
+    environment:
+      MONGO_URL: mongodb://database:27017
+      DB_NAME: kindness_wall
+    ports:
+      - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - kindness-network
+
+  # ─── Nginx Frontend ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kindness-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - kindness-network
+
+# ─── Shared Network ───────────────────────────────────────────────
+networks:
+  kindness-network:
+    driver: bridge
+
+# ─── Persistent Volume for MongoDB ───────────────────────────────
+volumes:
+  mongo_data:
+    driver: local
