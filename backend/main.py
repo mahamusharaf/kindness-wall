@@ -1,6 +1,4 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pymongo import MongoClient
@@ -109,10 +107,3 @@ def delete_entry(entry_id: str):
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
-
-
-app.mount("/static", StaticFiles(directory="../frontend"), name="static")
-
-@app.get("/{full_path:path}")
-def serve_frontend(full_path: str):
-    return FileResponse("../frontend/index.html")
