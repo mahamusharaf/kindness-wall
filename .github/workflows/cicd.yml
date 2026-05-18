@@ -44,7 +44,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: mahrukh26
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Backend Image
@@ -94,7 +94,9 @@ jobs:
       - name: Deploy to AKS
         run: |
           kubectl apply -f k8s/
-          kubectl set image deployment/kindness-backend backend=mahrukh26/kindness-wall:latest
-          kubectl set image deployment/kindness-frontend frontend=mahrukh26/kindness-frontend:latest
-          kubectl rollout status deployment/kindness-backend
-          kubectl rollout status deployment/kindness-frontend
+          kubectl set image deployment/backend backend=mahrukh26/kindness-wall:latest
+          kubectl set image deployment/frontend frontend=mahrukh26/kindness-frontend:latest
+          kubectl set image deployment/database database=mahrukh26/kindness-database:latest
+          kubectl rollout status deployment/backend
+          kubectl rollout status deployment/frontend
+          kubectl rollout status deployment/database
