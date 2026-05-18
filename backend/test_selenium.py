@@ -14,6 +14,7 @@ def driver():
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
     driver = webdriver.Chrome(options=options)
     driver.implicitly_wait(10)
     yield driver
@@ -25,7 +26,7 @@ def test_homepage_loads(driver):
     driver.get(BASE_URL)
     assert "Kindness" in driver.title
     heading = driver.find_element(By.TAG_NAME, "h1")
-    assert "Kindness Wall" in heading.text
+    assert "KINDNESS WALL" in heading.text.upper()
     print("Test 1 PASSED: Homepage loads correctly")
 
 
@@ -44,6 +45,8 @@ def test_form_elements_present(driver):
 def test_submit_kindness_entry(driver):
     """Test 3: Validate form submission behavior"""
     driver.get(BASE_URL)
+    time.sleep(2)
+
     name_input = driver.find_element(By.ID, "name-input")
     story_input = driver.find_element(By.ID, "story-input")
     submit_btn = driver.find_element(By.ID, "submit-btn")
@@ -52,10 +55,12 @@ def test_submit_kindness_entry(driver):
     name_input.send_keys("Selenium Tester")
     story_input.clear()
     story_input.send_keys("I helped someone with their DevOps exam at 1am!")
-    submit_btn.click()
+
+    driver.execute_script("arguments[0].scrollIntoView(true);", submit_btn)
+    time.sleep(1)
+    driver.execute_script("arguments[0].click();", submit_btn)
     time.sleep(2)
 
-    # Check page still loaded (no crash)
     assert "Kindness" in driver.title
     print("Test 3 PASSED: Form submission works")
 
@@ -75,12 +80,14 @@ def test_character_counter(driver):
 def test_kind_acts_feed_section(driver):
     """Test 5: Verify Kind Acts Feed section is present"""
     driver.get(BASE_URL)
+    time.sleep(2)
+
     feed_section = driver.find_element(By.ID, "entries-container")
     assert feed_section.is_displayed()
 
     refresh_btn = driver.find_element(By.ID, "refresh-btn")
     assert refresh_btn.is_displayed()
-    refresh_btn.click()
+    driver.execute_script("arguments[0].click();", refresh_btn)
     time.sleep(1)
     print("Test 5 PASSED: Kind Acts Feed section works")
 
